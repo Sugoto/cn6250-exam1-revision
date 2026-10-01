@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS 6250 · Exam 1 Revision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bar"><div class="bar-fill" id="barFill"></div></div>
+
+<header>
+  <h1>CS 6250 <span>Exam 1</span></h1>
+  <nav id="modules"></nav>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="seg" id="modeSeg">
+      <button data-mode="quiz" class="on">Quiz</button>
+      <button data-mode="read">Read</button>
+    </div>
+    <label class="tog"><input type="checkbox" id="shuffle"> Shuffle</label>
+    <label class="tog"><input type="checkbox" id="missed"> Missed only</label>
+    <span class="score" id="score"></span>
+  </div>
+
+  <section id="quiz">
+    <article class="card" id="card"></article>
+    <div class="pager">
+      <button id="prev" aria-label="Previous">←</button>
+      <span id="pos"></span>
+      <button id="next" aria-label="Next">→</button>
+    </div>
+  </section>
+
+  <section id="read" hidden></section>
+</main>
+
+<footer>
+  <span><kbd>A</kbd>–<kbd>D</kbd> / <kbd>T</kbd> <kbd>F</kbd> answer</span>
+  <span><kbd>←</kbd> <kbd>→</kbd> move</span>
+  <button id="reset" class="link">Reset progress</button>
+</footer>
+
+<dialog id="zoom"><img alt=""></dialog>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
