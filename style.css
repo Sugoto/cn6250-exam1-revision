@@ -9,8 +9,8 @@
   --right-bg: #e8f2ea;
   --wrong: #b23a2e;
   --wrong-bg: #f8e7e3;
-  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, monospace;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -158,3 +158,9 @@ dialog img { display: block; max-width: 94vw; max-height: 90vh; border-radius: 1
   .score { margin-left: 0; width: 100%; }
   footer kbd, footer span { display: none; }
 }
+
+code {
+  font-family: var(--mono); font-size: .88em;
+  background: rgba(60, 40, 10, .06); border-radius: 4px; padding: 1px 4px;
+}
+.opt.right code, .opt.wrong code { background: rgba(255, 255, 255, .5); }

@@ -9,6 +9,21 @@
     return e;
   };
 
+  // Wrap numbers, addresses, prefixes and bit patterns in <code> (text-safe, no innerHTML).
+  const CODE = /(\b\d{1,3}(?:\.\d{1,3}){3}(?:\/\d+)?\b|\b[01]+\*|\/\d+\b|\b\d+(?:[.,]\d+)*(?:\s?(?:Mbps|Gbps|Kbps|bps|ms|bytes|bits|KB|MB|GB|B|b|s)\b)?)/g;
+  function rich(text) {
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    for (const m of text.matchAll(CODE)) {
+      if (m.index > last) frag.append(text.slice(last, m.index));
+      frag.append(el("code", null, m[0]));
+      last = m.index + m[0].length;
+    }
+    frag.append(text.slice(last));
+    return frag;
+  }
+  const richEl = (tag, cls, text) => { const e = el(tag, cls); e.append(rich(text)); return e; };
+
   const KEY = "cn6250-exam1";
   const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
   const state = {
@@ -53,8 +68,8 @@
       if (m) parts = [m[1], m[2]];
     }
     const ask = parts.length > 1 ? parts.pop() : null;
-    p.append(parts.join("\n"));
-    if (ask) p.append(el("span", "ask", ask));
+    p.append(rich(parts.join("\n")));
+    if (ask) p.append(richEl("span", "ask", ask));
     return p;
   }
 
@@ -84,7 +99,7 @@
       outcome === true ? "Correct" :
       outcome === false ? `Answer · ${q.answer}` :
       `Answer · ${q.answer}`;
-    w.append(el("span", "lbl " + (outcome === false ? "no" : "ok"), label), q.why);
+    w.append(el("span", "lbl " + (outcome === false ? "no" : "ok"), label), rich(q.why));
     return w;
   }
 
@@ -94,7 +109,7 @@
       const li = el("li");
       const b = el("button", "opt");
       b.dataset.key = o.key;
-      b.append(el("span", "k", q.type === "TF" ? o.key[0] : o.key), el("span", null, o.text));
+      b.append(el("span", "k", q.type === "TF" ? o.key[0] : o.key), richEl("span", null, o.text));
       if (onPick) b.addEventListener("click", () => onPick(o.key));
       li.append(b);
       ul.append(li);
