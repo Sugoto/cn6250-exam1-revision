@@ -123,12 +123,17 @@ figcaption { font: 12px var(--mono); color: var(--muted); text-align: center; ma
   font: 13px var(--mono); color: var(--muted); text-decoration: underline; text-underline-offset: 3px;
 }
 
-.pager { display: flex; align-items: center; justify-content: center; gap: 22px; margin: 22px 0 8px; font: 13px var(--mono); color: var(--muted); }
+.pager { display: flex; justify-content: center; margin: 22px 0 8px; font: 13px var(--mono); color: var(--muted); }
+/* Fixed to the viewport beside the card column, so they never move with card height. */
 .pager button {
+  position: fixed; top: 50%; transform: translateY(-50%); z-index: 4;
   width: 42px; height: 42px; border-radius: 50%;
   border: 1px solid var(--line); background: var(--paper); font-size: 18px;
+  box-shadow: 0 6px 16px -10px rgba(60, 40, 10, .35);
   transition: border-color .15s;
 }
+#prev { left: calc(50% - 360px - 66px); }
+#next { right: calc(50% - 360px - 66px); }
 .pager button:hover:not(:disabled) { border-color: var(--muted); }
 .pager button:disabled { opacity: .35; cursor: default; }
 
@@ -149,6 +154,14 @@ kbd { font: inherit; border: 1px solid var(--line); border-radius: 4px; padding:
 dialog { border: 0; padding: 0; background: none; max-width: 94vw; max-height: 94vh; }
 dialog::backdrop { background: rgba(20, 18, 14, .75); }
 dialog img { display: block; max-width: 94vw; max-height: 90vh; border-radius: 10px; background: #fff; cursor: zoom-out; }
+
+/* No room beside the card: pin the arrows to the bottom corners instead. */
+@media (max-width: 880px) {
+  .pager button { top: auto; bottom: 20px; transform: none; }
+  #prev { left: 16px; }
+  #next { right: 16px; }
+  #quiz { padding-bottom: 56px; }
+}
 
 @media (max-width: 600px) {
   body { font-size: 16px; }

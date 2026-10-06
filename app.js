@@ -43,15 +43,23 @@
 
   const pool = () => (state.module ? ALL.filter(q => q.module === state.module) : ALL);
 
+  const LETTERS = "ABCD";
+  function shuffled(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  // Options keep their original key (used for grading); the shown letter is their position.
+  const shownLetter = (q, key) => q.type === "TF" ? key : LETTERS[q.options.findIndex(o => o.key === key)];
+
   function buildDeck() {
     deck = pool();
     if (state.missed) deck = deck.filter(q => state.results[q.id] === false);
     if (state.shuffle) {
-      deck = deck.slice();
-      for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
-      }
+      deck = shuffled(deck).map(q => q.type === "TF" ? q : { ...q, options: shuffled(q.options) });
       idx = 0;
     } else {
       idx = Math.min(state.pos[state.module] ?? 0, Math.max(deck.length - 1, 0));
@@ -97,19 +105,18 @@
     const w = el("div", "why");
     const label =
       outcome === true ? "Correct" :
-      outcome === false ? `Answer · ${q.answer}` :
-      `Answer · ${q.answer}`;
+      `Answer · ${shownLetter(q, q.answer)}`;
     w.append(el("span", "lbl " + (outcome === false ? "no" : "ok"), label), rich(q.why));
     return w;
   }
 
   function optionNodes(q, onPick) {
     const ul = el("ul", "opts");
-    const buttons = q.options.map(o => {
+    const buttons = q.options.map((o, i) => {
       const li = el("li");
       const b = el("button", "opt");
       b.dataset.key = o.key;
-      b.append(el("span", "k", q.type === "TF" ? o.key[0] : o.key), richEl("span", null, o.text));
+      b.append(el("span", "k", q.type === "TF" ? o.key[0] : LETTERS[i]), richEl("span", null, o.text));
       if (onPick) b.addEventListener("click", () => onPick(o.key));
       li.append(b);
       ul.append(li);
@@ -269,8 +276,8 @@
     const { q } = current;
     let key = null;
     if (q.type === "TF") key = k === "t" || k === "1" ? "True" : k === "f" || k === "2" ? "False" : null;
-    else if ("abcd".includes(k) && k.length === 1) key = k.toUpperCase();
-    else if ("1234".includes(k) && k.length === 1) key = "ABCD"[+k - 1];
+    else if ("abcd".includes(k) && k.length === 1) key = q.options[LETTERS.indexOf(k.toUpperCase())]?.key;
+    else if ("1234".includes(k) && k.length === 1) key = q.options[+k - 1]?.key;
     else if (k === " " || k === "enter") { e.preventDefault(); answer(null); return; }
     if (key && q.options.some(o => o.key === key)) answer(key);
   });
